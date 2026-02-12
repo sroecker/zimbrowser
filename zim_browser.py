@@ -275,6 +275,7 @@ class ZimBrowser(App):
     def __init__(self, archive: Archive) -> None:
         self.archive = archive
         self.current_article: reactive[str] = reactive("")
+        self.current_article_path: str = ""
         super().__init__()
     
     def compose(self) -> ComposeResult:
@@ -357,6 +358,14 @@ class ZimBrowser(App):
         if "#" in path:
             path = path.split("#")[0]
         
+        # Normalize relative paths (../ ./ etc.) against current article path
+        import posixpath
+        if path.startswith("../") or path.startswith("./"):
+            # Get directory of current article
+            base_dir = posixpath.dirname(self.current_article_path)
+            # Join and normalize
+            path = posixpath.normpath(posixpath.join(base_dir, path))
+        
         # Try to load the article
         try:
             entry = self.archive.get_entry_by_path(path)
@@ -386,6 +395,7 @@ class ZimBrowser(App):
             # Update content
             self.content_view.update(markdown_content)
             self.current_article = title
+            self.current_article_path = entry.path
             self.sub_title = title
             
         except Exception as e:
