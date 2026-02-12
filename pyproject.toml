@@ -1,0 +1,11 @@
+[project]
+name = "zimbrowser"
+version = "0.1.0"
+description = "A simple TUI browser for ZIM files"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "libzim>=3.8.0",
+    "markdownify>=1.2.2",
+    "textual>=7.5.0",
+]
