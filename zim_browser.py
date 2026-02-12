@@ -66,6 +66,8 @@ class ContentView(VerticalScroll):
         Binding("pageup", "page_up", "Page Up"),
         Binding("g", "scroll_home", "Scroll to Top"),
         Binding("G", "scroll_end", "Scroll to Bottom"),
+        Binding("s", "focus_sidebar", "Focus Sidebar"),
+        Binding("c", "focus_content", "Focus Content"),
     ]
     
     def __init__(self, **kwargs) -> None:
@@ -103,6 +105,14 @@ class ContentView(VerticalScroll):
     def action_scroll_end(self) -> None:
         """Scroll to bottom."""
         self.scroll_end()
+    
+    def action_focus_sidebar(self) -> None:
+        """Focus the sidebar."""
+        self.app.sidebar.focus()
+    
+    def action_focus_content(self) -> None:
+        """Focus the content area (self)."""
+        self.focus()
 
 
 class SearchModal(Input):
@@ -118,7 +128,8 @@ class SearchModal(Input):
         self.post_message(self.SearchSubmitted(event.value))
         event.stop()
     
-    def key_escape(self) -> None:
+    def key_escape(self, event) -> None:
+        event.stop()
         self.post_message(self.SearchCancelled())
     
     class SearchSubmitted(Message):
@@ -288,23 +299,33 @@ class ZimBrowser(App):
             self.mount(SearchModal(placeholder="Search articles... (Enter to confirm, Esc to cancel)", id="search-overlay"))
     
     def action_cancel_search(self) -> None:
-        """Cancel and hide search overlay."""
-        search_overlay = self.query_one("#search-overlay", SearchModal)
-        search_overlay.remove()
-        self.sidebar.focus()
+        """Cancel and hide search overlay or reset sidebar to normal articles."""
+        # First, try to close search overlay if it exists
+        try:
+            search_overlay = self.query_one("#search-overlay", SearchModal)
+            search_overlay.remove()
+        except Exception:
+            # Search overlay not present - we're in the sidebar after search
+            pass
+        
+        # Always reset sidebar to normal articles and focus it
+        self.sidebar.load_articles("", 100)
+        self.sidebar.article_list.focus()
     
     def on_search_modal_search_submitted(self, message: SearchModal.SearchSubmitted) -> None:
         """Handle search submission."""
         search_overlay = self.query_one("#search-overlay", SearchModal)
         search_overlay.remove()
         self.sidebar.search_articles(message.query)
-        self.sidebar.focus()
+        self.sidebar.article_list.focus()
     
     def on_search_modal_search_cancelled(self, message: SearchModal.SearchCancelled) -> None:
         """Handle search cancellation."""
         search_overlay = self.query_one("#search-overlay", SearchModal)
         search_overlay.remove()
-        self.sidebar.focus()
+        # Reset sidebar to show normal articles
+        self.sidebar.load_articles("", 100)
+        self.sidebar.article_list.focus()
     
     def on_list_view_selected(self, event: ListView.Selected) -> None:
         """Handle article selection."""
