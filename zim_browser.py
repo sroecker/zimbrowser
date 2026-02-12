@@ -334,6 +334,33 @@ class ZimBrowser(App):
             path, title = article
             self.load_article(path, title)
     
+    def on_markdown_link_clicked(self, event: Markdown.LinkClicked) -> None:
+        """Handle clicked links in article content."""
+        href = event.href
+        
+        # Skip external links (open in browser instead)
+        if href.startswith("http://") or href.startswith("https://") or href.startswith("//"):
+            import webbrowser
+            webbrowser.open(href)
+            return
+        
+        # Normalize the path for ZIM
+        # Remove leading slash if present, ZIM paths typically don't have them
+        path = href.lstrip("/")
+        
+        # Handle URL-encoded characters (e.g., %20 for space)
+        from urllib.parse import unquote
+        path = unquote(path)
+        
+        # Try to load the article
+        try:
+            entry = self.archive.get_entry_by_path(path)
+            title = entry.title or path
+            self.load_article(path, title)
+        except Exception:
+            # Article not found, might be a special page or missing
+            self.content_view.update(f"# Not Found\n\nArticle not found: `{path}`")
+    
     def load_article(self, path: str, title: str) -> None:
         """Load and display an article."""
         try:
