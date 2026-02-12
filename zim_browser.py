@@ -352,6 +352,11 @@ class ZimBrowser(App):
         from urllib.parse import unquote
         path = unquote(path)
         
+        # Remove fragment identifier (#section) - ZIM doesn't store fragments separately
+        # We load the article and ignore the fragment for now
+        if "#" in path:
+            path = path.split("#")[0]
+        
         # Try to load the article
         try:
             entry = self.archive.get_entry_by_path(path)
