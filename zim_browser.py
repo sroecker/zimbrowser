@@ -69,6 +69,7 @@ class ContentView(VerticalScroll):
         Binding("G", "scroll_end", "Scroll to Bottom"),
         Binding("s", "focus_sidebar", "Focus Sidebar"),
         Binding("c", "focus_content", "Focus Content"),
+        Binding("r", "random_article", "Random Article"),
     ]
     
     def __init__(self, **kwargs) -> None:
@@ -114,6 +115,10 @@ class ContentView(VerticalScroll):
     def action_focus_content(self) -> None:
         """Focus the content area (self)."""
         self.focus()
+    
+    def action_random_article(self) -> None:
+        """Load a random article."""
+        self.app.action_random_article()
 
 
 class SearchModal(Input):
@@ -311,6 +316,7 @@ class ZimBrowser(App):
         Binding("tab", "focus_next", "Next Focus"),
         Binding("s", "focus_sidebar", "Focus Sidebar"),
         Binding("c", "focus_content", "Focus Content"),
+        Binding("r", "random_article", "Random Article"),
     ]
     
     def __init__(self, archive: Archive) -> None:
@@ -464,6 +470,17 @@ class ZimBrowser(App):
             self.content_view.focus()
         else:
             self.sidebar.focus()
+    
+    def action_random_article(self) -> None:
+        """Load a random article from the archive."""
+        try:
+            entry = self.archive.get_random_entry()
+            if entry:
+                title = entry.title or entry.path
+                self.load_article(entry.path, title)
+                self.content_view.focus()
+        except Exception as e:
+            self.content_view.update(f"# Error\n\nFailed to load random article: {e}")
 
 
 def main():
