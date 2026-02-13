@@ -7,11 +7,14 @@ import sys
 import warnings
 import webbrowser
 import posixpath
-from typing import TypeAlias
+from collections import OrderedDict
+from typing import Any, TypeAlias
 from pathlib import Path
 from urllib.parse import unquote
 
 ArticleEntry: TypeAlias = tuple[str, str]  # (path, title)
+
+MARKDOWN_CACHE_SIZE = 50
 
 warnings.filterwarnings("ignore", category=DeprecationWarning, module="libzim")
 
@@ -109,15 +112,15 @@ class ContentView(VerticalScroll):
         self.scroll_end()
     
     def action_focus_sidebar(self) -> None:
-        """Focus the sidebar."""
-        self.app.sidebar.focus()
+        """Focus the sidebar via app action."""
+        self.app.action_focus_sidebar()
     
     def action_focus_content(self) -> None:
         """Focus the content area (self)."""
         self.focus()
     
     def action_random_article(self) -> None:
-        """Load a random article."""
+        """Load a random article via app action."""
         self.app.action_random_article()
 
 
@@ -134,7 +137,7 @@ class SearchModal(Input):
         self.post_message(self.SearchSubmitted(event.value))
         event.stop()
     
-    def key_escape(self, event) -> None:
+    def key_escape(self, event: Any) -> None:
         event.stop()
         self.post_message(self.SearchCancelled())
     
@@ -215,7 +218,7 @@ class Sidebar(Vertical):
                 items.append(ListItem(Label(title), name=path))
                 count += 1
             except Exception:
-                pass
+                pass  # Skip entries that can't be loaded - non-critical
         
         for item in items:
             self.article_list.append(item)
@@ -266,11 +269,13 @@ class ZimBrowser(App):
     """Main ZIM Browser application."""
     
     CSS_PATH = "zim_browser.tcss"
+    current_article = reactive("")
     
     BINDINGS = [
         Binding("q", "quit", "Quit"),
         Binding("/", "search", "Search"),
         Binding("escape", "cancel_search", "Cancel"),
+        Binding("h", "reset_list", "Home"),
         Binding("tab", "focus_next", "Next Focus"),
         Binding("s", "focus_sidebar", "Focus Sidebar"),
         Binding("c", "focus_content", "Focus Content"),
@@ -281,10 +286,10 @@ class ZimBrowser(App):
     
     def __init__(self, archive: Archive) -> None:
         self.archive = archive
-        self.current_article: reactive[str] = reactive("")
         self.current_article_path: str = ""
         self.history: list[ArticleEntry] = []
         self.history_index: int = -1
+        self._content_cache: OrderedDict[str, str] = OrderedDict()
         super().__init__()
     
     def compose(self) -> ComposeResult:
@@ -306,28 +311,25 @@ class ZimBrowser(App):
             main_entry = self.archive.get_entry_by_path("mainPage")
             if main_entry:
                 title = main_entry.title or "Main Page"
-                self._add_to_history(main_entry.path, title)
                 self.load_article(main_entry.path, title)
         except Exception:
-            pass  # No main page available, continue without it
+            pass
     
     def action_search(self) -> None:
         """Show search overlay."""
-        # Check if search overlay already exists
         if not list(self.query("#search-overlay")):
             self.mount(SearchModal(placeholder="Search articles... (Enter to confirm, Esc to cancel)", id="search-overlay"))
     
     def action_cancel_search(self) -> None:
-        """Cancel and hide search overlay or reset sidebar to normal articles."""
-        # First, try to close search overlay if it exists
+        """Cancel and hide search overlay."""
         try:
             search_overlay = self.query_one("#search-overlay", SearchModal)
             search_overlay.remove()
         except Exception:
-            # Search overlay not present - we're in the sidebar after search
             pass
-        
-        # Always reset sidebar to normal articles and focus it
+    
+    def action_reset_list(self) -> None:
+        """Reset sidebar to show all articles (default prefix)."""
         self.sidebar.load_articles("", 100)
         self.sidebar.article_list.focus()
     
@@ -339,12 +341,9 @@ class ZimBrowser(App):
         self.sidebar.article_list.focus()
     
     def on_search_modal_search_cancelled(self, message: SearchModal.SearchCancelled) -> None:
-        """Handle search cancellation."""
+        """Handle search cancellation - close overlay only."""
         search_overlay = self.query_one("#search-overlay", SearchModal)
         search_overlay.remove()
-        # Reset sidebar to show normal articles
-        self.sidebar.load_articles("", 100)
-        self.sidebar.article_list.focus()
     
     def on_list_view_selected(self, event: ListView.Selected) -> None:
         """Handle article selection."""
@@ -353,47 +352,49 @@ class ZimBrowser(App):
             path, title = article
             self.load_article(path, title)
     
+    def _normalize_href(self, href: str) -> str | None:
+        """Normalize an internal href to a ZIM path.
+
+        Args:
+            href: The href from the markdown link.
+
+        Returns:
+            The normalized path, or None if the href is external.
+        """
+        if href.startswith("http://") or href.startswith("https://") or href.startswith("//"):
+            webbrowser.open(href)
+            return None
+        
+        path = href.lstrip("/")
+        path = unquote(path)
+        
+        if "?" in path:
+            path = path.split("?")[0]
+        
+        if "#" in path:
+            path = path.split("#")[0]
+        
+        if path.startswith("../") or path.startswith("./"):
+            if not self.current_article_path:
+                return None
+            base_dir = posixpath.dirname(self.current_article_path)
+            path = posixpath.normpath(posixpath.join(base_dir, path))
+        
+        return path
+    
     def on_markdown_link_clicked(self, event: Markdown.LinkClicked) -> None:
         """Handle clicked links in article content."""
         href = event.href
         
-        # Skip external links (open in browser instead)
-        if href.startswith("http://") or href.startswith("https://") or href.startswith("//"):
-            webbrowser.open(href)
+        path = self._normalize_href(href)
+        if path is None:
             return
         
-        # Normalize the path for ZIM
-        # Remove leading slash if present, ZIM paths typically don't have them
-        path = href.lstrip("/")
-        
-        # Handle URL-encoded characters (e.g., %20 for space)
-        path = unquote(path)
-        
-        # Remove query parameters (?key=value) - ZIM doesn't use them
-        if "?" in path:
-            path = path.split("?")[0]
-        
-        # Remove fragment identifier (#section) - ZIM doesn't store fragments separately
-        # We load the article and ignore the fragment for now
-        if "#" in path:
-            path = path.split("#")[0]
-        
-        # Normalize relative paths (../ ./ etc.) against current article path
-        if path.startswith("../") or path.startswith("./"):
-            if not self.current_article_path:
-                self.content_view.update(f"# Error\n\nCannot resolve relative link without a current article: `{href}`")
-                return
-            # Get directory of current article and join with relative path
-            base_dir = posixpath.dirname(self.current_article_path)
-            path = posixpath.normpath(posixpath.join(base_dir, path))
-        
-        # Try to load the article
         try:
             entry = self.archive.get_entry_by_path(path)
             title = entry.title or path
             self.load_article(path, title)
         except Exception:
-            # Article not found, might be a special page or missing
             self.content_view.update(f"# Not Found\n\nArticle not found: `{path}`")
     
     def load_article(self, path: str, title: str) -> None:
@@ -403,7 +404,29 @@ class ZimBrowser(App):
             path: The path to the article in the ZIM archive.
             title: The display title for the article.
         """
-        self._add_to_history(path, title)
+        success = self._render_article(path, title)
+        
+        if success:
+            self._add_to_history(path, title)
+    
+    def _render_article(self, path: str, title: str) -> bool:
+        """Render an article to the content view.
+
+        Args:
+            path: The path to the article.
+            title: The display title.
+
+        Returns:
+            True if article was rendered successfully, False otherwise.
+        """
+        if path in self._content_cache:
+            markdown_content = self._content_cache[path]
+            self._content_cache.move_to_end(path)
+            self.content_view.update(markdown_content)
+            self.current_article = title
+            self.current_article_path = path
+            self.sub_title = title
+            return True
         
         try:
             entry = self.archive.get_entry_by_path(path)
@@ -414,7 +437,7 @@ class ZimBrowser(App):
                     title = entry.title or entry.path
                 except Exception as e:
                     self.content_view.update(f"# Error\n\nFailed to follow redirect: {e}")
-                    return
+                    return False
             
             item = entry.get_item()
             content = item.content.tobytes()
@@ -422,13 +445,20 @@ class ZimBrowser(App):
             html_content = content.decode('utf-8', errors='replace')
             markdown_content = md(html_content, heading_style="ATX")
             
+            self._content_cache[path] = markdown_content
+            if len(self._content_cache) > MARKDOWN_CACHE_SIZE:
+                self._content_cache.popitem(last=False)
+            
             self.content_view.update(markdown_content)
             self.current_article = title
             self.current_article_path = entry.path
             self.sub_title = title
             
+            return True
+            
         except Exception as e:
             self.content_view.update(f"# Error\n\nFailed to load article: {e}")
+            return False
     
     def action_focus_sidebar(self) -> None:
         """Focus the sidebar."""
@@ -478,45 +508,14 @@ class ZimBrowser(App):
         if self.history_index > 0:
             self.history_index -= 1
             path, title = self.history[self.history_index]
-            self._load_article_from_history(path, title)
+            self._render_article(path, title)
     
     def action_history_forward(self) -> None:
         """Navigate to the next article in history."""
         if self.history_index < len(self.history) - 1:
             self.history_index += 1
             path, title = self.history[self.history_index]
-            self._load_article_from_history(path, title)
-    
-    def _load_article_from_history(self, path: str, title: str) -> None:
-        """Load an article without adding it to history (used for navigation).
-
-        Args:
-            path: The path to the article.
-            title: The title of the article.
-        """
-        try:
-            entry = self.archive.get_entry_by_path(path)
-            
-            if entry.is_redirect:
-                try:
-                    entry = entry.get_redirect_entry()
-                    title = entry.title or entry.path
-                except Exception:
-                    pass
-            
-            item = entry.get_item()
-            content = item.content.tobytes()
-            
-            html_content = content.decode('utf-8', errors='replace')
-            markdown_content = md(html_content, heading_style="ATX")
-            
-            self.content_view.update(markdown_content)
-            self.current_article = title
-            self.current_article_path = entry.path
-            self.sub_title = title
-            
-        except Exception as e:
-            self.content_view.update(f"# Error\n\nFailed to load article: {e}")
+            self._render_article(path, title)
 
 
 def main() -> None:
