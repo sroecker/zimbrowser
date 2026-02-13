@@ -1,0 +1,62 @@
+Screen {
+    align: center middle;
+}
+
+#sidebar {
+    width: 30%;
+    height: 100%;
+    border: solid $primary;
+}
+
+#sidebar-title {
+    height: auto;
+    padding: 1;
+    background: $primary;
+    color: $text;
+    text-align: center;
+    text-style: bold;
+}
+
+#article-list {
+    height: 1fr;
+    border: none;
+}
+
+#article-list:focus {
+    background: $surface-lighten-1;
+}
+
+#article-list > ListItem:focus {
+    background: $primary-darken-2;
+}
+
+#content {
+    width: 70%;
+    height: 100%;
+    border: solid $primary;
+    padding: 1;
+}
+
+#markdown-content {
+    width: 100%;
+    height: auto;
+}
+
+#search-overlay {
+    layer: overlay;
+    width: 60%;
+    height: auto;
+    background: $surface;
+    border: solid $primary;
+    padding: 1;
+    margin-top: 1;
+}
+
+#search-input {
+    width: 100%;
+}
+
+.loading {
+    text-align: center;
+    text-style: bold;
+}

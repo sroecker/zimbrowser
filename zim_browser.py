@@ -7,8 +7,11 @@ import sys
 import warnings
 import webbrowser
 import posixpath
+from typing import TypeAlias
 from pathlib import Path
 from urllib.parse import unquote
+
+ArticleEntry: TypeAlias = tuple[str, str]  # (path, title)
 
 warnings.filterwarnings("ignore", category=DeprecationWarning, module="libzim")
 
@@ -67,9 +70,6 @@ class ContentView(VerticalScroll):
         Binding("pageup", "page_up", "Page Up"),
         Binding("g", "scroll_home", "Scroll to Top"),
         Binding("G", "scroll_end", "Scroll to Bottom"),
-        Binding("s", "focus_sidebar", "Focus Sidebar"),
-        Binding("c", "focus_content", "Focus Content"),
-        Binding("r", "random_article", "Random Article"),
     ]
     
     def __init__(self, **kwargs) -> None:
@@ -155,7 +155,7 @@ class Sidebar(Vertical):
     def __init__(self, archive: Archive) -> None:
         self.archive = archive
         self.suggestion_searcher = SuggestionSearcher(archive)
-        self.all_articles: list[tuple[str, str]] = []  # (path, title)
+        self.all_articles: list[ArticleEntry] = []
         self.current_prefix: str = ""
         self.current_offset: int = 0
         self.batch_size: int = 100
@@ -168,14 +168,19 @@ class Sidebar(Vertical):
         yield self.article_list
     
     def on_mount(self) -> None:
+        """Initialize the sidebar by loading initial articles."""
         self.load_articles("", 100)
-        # Watch for highlight changes to trigger lazy loading
         self.article_list.watch(self.article_list, "index", self._on_highlight_changed)
     
     def load_articles(self, prefix: str = "", limit: int = 100) -> None:
-        """Load articles from ZIM file."""
+        """Load articles from ZIM file.
+
+        Args:
+            prefix: The prefix to search for in article titles.
+            limit: Maximum number of articles to load.
+        """
         if not prefix:
-            prefix = "a"  # Default prefix if empty
+            prefix = "a"
         
         self.current_prefix = prefix
         self.current_offset = 0
@@ -185,7 +190,13 @@ class Sidebar(Vertical):
         self._load_batch(0, limit, clear=True)
     
     def _load_batch(self, offset: int, limit: int, clear: bool = False) -> None:
-        """Load a batch of articles."""
+        """Load a batch of articles from the ZIM file.
+
+        Args:
+            offset: Starting position for loading articles.
+            limit: Number of articles to load.
+            clear: Whether to clear existing articles before loading.
+        """
         suggestion = self.suggestion_searcher.suggest(self.current_prefix)
         results = suggestion.getResults(offset, limit)
         
@@ -209,7 +220,6 @@ class Sidebar(Vertical):
         for item in items:
             self.article_list.append(item)
         
-        # Update state
         self.current_offset = offset + count
         self.has_more = count >= limit
     
@@ -219,11 +229,14 @@ class Sidebar(Vertical):
             self._load_batch(self.current_offset, self.batch_size)
     
     def _on_highlight_changed(self, new_index: int | None) -> None:
-        """Called when the highlighted item changes - trigger lazy loading near bottom."""
+        """Called when the highlighted item changes to trigger lazy loading near bottom.
+
+        Args:
+            new_index: The new index of the highlighted item.
+        """
         if not self.has_more or new_index is None:
             return
         
-        # Load more when within 10 items of the bottom
         threshold = 10
         list_size = len(self.all_articles)
         
@@ -231,11 +244,19 @@ class Sidebar(Vertical):
             self.load_more_articles()
     
     def search_articles(self, query: str) -> None:
-        """Search for articles matching query."""
+        """Search for articles matching query.
+
+        Args:
+            query: The search query prefix to match against article titles.
+        """
         self.load_articles(query, 100)
     
-    def get_selected_article(self) -> tuple[str, str] | None:
-        """Get the currently selected article path and title."""
+    def get_selected_article(self) -> ArticleEntry | None:
+        """Get the currently selected article path and title.
+
+        Returns:
+            A tuple of (path, title) for the selected article, or None if no article is selected.
+        """
         if self.article_list.index is not None and 0 <= self.article_list.index < len(self.all_articles):
             return self.all_articles[self.article_list.index]
         return None
@@ -244,70 +265,7 @@ class Sidebar(Vertical):
 class ZimBrowser(App):
     """Main ZIM Browser application."""
     
-    CSS = """
-    Screen {
-        align: center middle;
-    }
-    
-    #sidebar {
-        width: 30%;
-        height: 100%;
-        border: solid $primary;
-    }
-    
-    #sidebar-title {
-        height: auto;
-        padding: 1;
-        background: $primary;
-        color: $text;
-        text-align: center;
-        text-style: bold;
-    }
-    
-    #article-list {
-        height: 1fr;
-        border: none;
-    }
-    
-    #article-list:focus {
-        background: $surface-lighten-1;
-    }
-    
-    #article-list > ListItem:focus {
-        background: $primary-darken-2;
-    }
-    
-    #content {
-        width: 70%;
-        height: 100%;
-        border: solid $primary;
-        padding: 1;
-    }
-    
-    #markdown-content {
-        width: 100%;
-        height: auto;
-    }
-    
-    #search-overlay {
-        layer: overlay;
-        width: 60%;
-        height: auto;
-        background: $surface;
-        border: solid $primary;
-        padding: 1;
-        margin-top: 1;
-    }
-    
-    #search-input {
-        width: 100%;
-    }
-    
-    .loading {
-        text-align: center;
-        text-style: bold;
-    }
-    """
+    CSS_PATH = "zim_browser.tcss"
     
     BINDINGS = [
         Binding("q", "quit", "Quit"),
@@ -338,7 +296,15 @@ class ZimBrowser(App):
         yield Footer()
     
     def on_mount(self) -> None:
+        """Initialize the app and load the main page if available."""
         self.sidebar.focus()
+        try:
+            main_entry = self.archive.get_entry_by_path("mainPage")
+            if main_entry:
+                title = main_entry.title or "Main Page"
+                self.load_article(main_entry.path, title)
+        except Exception:
+            pass  # No main page available, continue without it
     
     def action_search(self) -> None:
         """Show search overlay."""
@@ -426,11 +392,15 @@ class ZimBrowser(App):
             self.content_view.update(f"# Not Found\n\nArticle not found: `{path}`")
     
     def load_article(self, path: str, title: str) -> None:
-        """Load and display an article."""
+        """Load and display an article.
+
+        Args:
+            path: The path to the article in the ZIM archive.
+            title: The display title for the article.
+        """
         try:
             entry = self.archive.get_entry_by_path(path)
             
-            # Follow redirects
             if entry.is_redirect:
                 try:
                     entry = entry.get_redirect_entry()
@@ -442,11 +412,9 @@ class ZimBrowser(App):
             item = entry.get_item()
             content = item.content.tobytes()
             
-            # Convert HTML to Markdown
             html_content = content.decode('utf-8', errors='replace')
             markdown_content = md(html_content, heading_style="ATX")
             
-            # Update content
             self.content_view.update(markdown_content)
             self.current_article = title
             self.current_article_path = entry.path
@@ -483,7 +451,8 @@ class ZimBrowser(App):
             self.content_view.update(f"# Error\n\nFailed to load random article: {e}")
 
 
-def main():
+def main() -> None:
+    """Main entry point for the ZIM Browser application."""
     if len(sys.argv) < 2:
         print("Usage: python zim_browser.py <zim_file>")
         print(f"\nExample:")
@@ -498,7 +467,7 @@ def main():
         sys.exit(1)
     
     try:
-        archive = Archive(zim_path)
+        archive = Archive(zim_file)
     except Exception as e:
         print(f"Error opening ZIM file: {e}")
         sys.exit(1)
