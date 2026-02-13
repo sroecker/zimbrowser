@@ -14,6 +14,8 @@ A Python-based tool for browsing and exploring ZIM archives. ZIM files are compr
   - Clickable internal links (supports relative paths, fragments, query params)
   - Full keyboard navigation
   - Random article feature
+  - History navigation (back/forward with arrow keys)
+  - Content caching for faster history navigation
 
 ## Quick Start
 
@@ -66,10 +68,12 @@ uv run python zim_browser.py data/<example.zim>
 | `Tab` | Switch focus between sidebar and content |
 | `s` / `c` | Focus sidebar / content |
 | `r` | Load random article |
+| `←` / `→` | Back / forward in article history |
+| `h` | Reset sidebar article list |
 | `Space` / `PageDown` | Page down in content |
 | `PageUp` | Page up in content |
 | `g` / `G` | Jump to top / bottom |
-| `Escape` | Cancel search / Reset sidebar to normal articles |
+| `Escape` | Close search overlay |
 | `q` | Quit |
 
 **Features:**
@@ -86,6 +90,7 @@ uv run python zim_browser.py data/<example.zim>
 zimbrowser/
 ├── list_zim_articles.py    # CLI tool for ZIM exploration
 ├── zim_browser.py          # Interactive TUI browser
+├── zim_browser.tcss        # Textual CSS styles
 ├── pyproject.toml          # Project configuration
 ├── uv.lock                 # Locked dependencies
 ├── data/                   # ZIM files directory

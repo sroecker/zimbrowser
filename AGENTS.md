@@ -23,6 +23,7 @@ zimbrowser/
 ├── .gitignore             # Standard Python gitignore
 ├── list_zim_articles.py   # Main CLI tool for ZIM file exploration
 ├── zim_browser.py         # TUI browser for interactive ZIM browsing
+├── zim_browser.tcss       # Textual CSS styles for the TUI browser
 ├── info.txt               # Reference to ZIM file source URL
 ├── data/                  # Data directory for ZIM files
 │   └── <example.zim>  # Your ZIM file here
@@ -52,6 +53,8 @@ An interactive TUI (Text User Interface) browser built with [Textual](https://te
 - **Content View**: Displays article content with HTML converted to Markdown
 - **Clickable Links**: Click any link to navigate (internal/external supported)
 - **Random Article**: Press `r` to load a random article
+- **History Navigation**: Left/Right arrow keys move backward/forward through visited articles
+- **Reset List**: Press `h` to reset sidebar article list to default browsing mode
 - **Full Keyboard Navigation**
 
 **Keyboard Shortcuts:**
@@ -64,10 +67,12 @@ An interactive TUI (Text User Interface) browser built with [Textual](https://te
 | `Tab` | Toggle focus between sidebar and content view |
 | `s` / `c` | Focus sidebar / content view |
 | `r` | Load random article |
+| `←` / `→` | Back / forward in article history |
+| `h` | Reset sidebar article list |
 | `Space` / `PageDown` | Page down in content view |
 | `PageUp` | Page up in content view |
 | `Enter` | Select article from sidebar to display |
-| `Escape` | Cancel search / Reset sidebar to normal articles |
+| `Escape` | Cancel search overlay |
 | `q` | Quit |
 
 **Link Handling:**
@@ -140,10 +145,12 @@ uv run python zim_browser.py data/<example.zim>
 | `Tab` | Toggle focus between sidebar and content view |
 | `s` / `c` | Focus sidebar / content view |
 | `r` | Load random article |
+| `←` / `→` | Back / forward in article history |
+| `h` | Reset sidebar article list |
 | `Space` / `PageDown` | Page down in content view |
 | `PageUp` | Page up in content view |
 | `Enter` | Select article from sidebar to display |
-| `Escape` | Cancel search / Reset sidebar to normal articles |
+| `Escape` | Cancel search overlay |
 | `q` | Quit |
 
 ### Adding Dependencies
