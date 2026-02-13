@@ -275,12 +275,16 @@ class ZimBrowser(App):
         Binding("s", "focus_sidebar", "Focus Sidebar"),
         Binding("c", "focus_content", "Focus Content"),
         Binding("r", "random_article", "Random Article"),
+        Binding("left", "history_back", "Back"),
+        Binding("right", "history_forward", "Forward"),
     ]
     
     def __init__(self, archive: Archive) -> None:
         self.archive = archive
         self.current_article: reactive[str] = reactive("")
         self.current_article_path: str = ""
+        self.history: list[ArticleEntry] = []
+        self.history_index: int = -1
         super().__init__()
     
     def compose(self) -> ComposeResult:
@@ -302,6 +306,7 @@ class ZimBrowser(App):
             main_entry = self.archive.get_entry_by_path("mainPage")
             if main_entry:
                 title = main_entry.title or "Main Page"
+                self._add_to_history(main_entry.path, title)
                 self.load_article(main_entry.path, title)
         except Exception:
             pass  # No main page available, continue without it
@@ -398,6 +403,8 @@ class ZimBrowser(App):
             path: The path to the article in the ZIM archive.
             title: The display title for the article.
         """
+        self._add_to_history(path, title)
+        
         try:
             entry = self.archive.get_entry_by_path(path)
             
@@ -449,6 +456,67 @@ class ZimBrowser(App):
                 self.content_view.focus()
         except Exception as e:
             self.content_view.update(f"# Error\n\nFailed to load random article: {e}")
+    
+    def _add_to_history(self, path: str, title: str) -> None:
+        """Add an article to the browsing history.
+
+        Args:
+            path: The path to the article.
+            title: The title of the article.
+        """
+        if self.history_index < len(self.history) - 1:
+            self.history = self.history[:self.history_index + 1]
+        
+        if self.history and self.history[-1] == (path, title):
+            return
+        
+        self.history.append((path, title))
+        self.history_index = len(self.history) - 1
+    
+    def action_history_back(self) -> None:
+        """Navigate to the previous article in history."""
+        if self.history_index > 0:
+            self.history_index -= 1
+            path, title = self.history[self.history_index]
+            self._load_article_from_history(path, title)
+    
+    def action_history_forward(self) -> None:
+        """Navigate to the next article in history."""
+        if self.history_index < len(self.history) - 1:
+            self.history_index += 1
+            path, title = self.history[self.history_index]
+            self._load_article_from_history(path, title)
+    
+    def _load_article_from_history(self, path: str, title: str) -> None:
+        """Load an article without adding it to history (used for navigation).
+
+        Args:
+            path: The path to the article.
+            title: The title of the article.
+        """
+        try:
+            entry = self.archive.get_entry_by_path(path)
+            
+            if entry.is_redirect:
+                try:
+                    entry = entry.get_redirect_entry()
+                    title = entry.title or entry.path
+                except Exception:
+                    pass
+            
+            item = entry.get_item()
+            content = item.content.tobytes()
+            
+            html_content = content.decode('utf-8', errors='replace')
+            markdown_content = md(html_content, heading_style="ATX")
+            
+            self.content_view.update(markdown_content)
+            self.current_article = title
+            self.current_article_path = entry.path
+            self.sub_title = title
+            
+        except Exception as e:
+            self.content_view.update(f"# Error\n\nFailed to load article: {e}")
 
 
 def main() -> None:
