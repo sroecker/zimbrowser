@@ -5,7 +5,10 @@ ZIM Browser TUI - A textual-based browser for ZIM archives.
 
 import sys
 import warnings
+import webbrowser
+import posixpath
 from pathlib import Path
+from urllib.parse import unquote
 
 warnings.filterwarnings("ignore", category=DeprecationWarning, module="libzim")
 
@@ -31,9 +34,7 @@ from textual.widgets import (
     Label,
     Header,
     Footer,
-    Static,
 )
-from textual.widget import Widget
 from textual.containers import Horizontal, Vertical, VerticalScroll
 from textual.reactive import reactive
 from textual.binding import Binding
@@ -341,7 +342,6 @@ class ZimBrowser(App):
         
         # Skip external links (open in browser instead)
         if href.startswith("http://") or href.startswith("https://") or href.startswith("//"):
-            import webbrowser
             webbrowser.open(href)
             return
         
@@ -350,8 +350,11 @@ class ZimBrowser(App):
         path = href.lstrip("/")
         
         # Handle URL-encoded characters (e.g., %20 for space)
-        from urllib.parse import unquote
         path = unquote(path)
+        
+        # Remove query parameters (?key=value) - ZIM doesn't use them
+        if "?" in path:
+            path = path.split("?")[0]
         
         # Remove fragment identifier (#section) - ZIM doesn't store fragments separately
         # We load the article and ignore the fragment for now
@@ -359,11 +362,12 @@ class ZimBrowser(App):
             path = path.split("#")[0]
         
         # Normalize relative paths (../ ./ etc.) against current article path
-        import posixpath
         if path.startswith("../") or path.startswith("./"):
-            # Get directory of current article
+            if not self.current_article_path:
+                self.content_view.update(f"# Error\n\nCannot resolve relative link without a current article: `{href}`")
+                return
+            # Get directory of current article and join with relative path
             base_dir = posixpath.dirname(self.current_article_path)
-            # Join and normalize
             path = posixpath.normpath(posixpath.join(base_dir, path))
         
         # Try to load the article
@@ -382,8 +386,12 @@ class ZimBrowser(App):
             
             # Follow redirects
             if entry.is_redirect:
-                entry = entry.get_redirect_entry()
-                title = entry.title or entry.path
+                try:
+                    entry = entry.get_redirect_entry()
+                    title = entry.title or entry.path
+                except Exception as e:
+                    self.content_view.update(f"# Error\n\nFailed to follow redirect: {e}")
+                    return
             
             item = entry.get_item()
             content = item.content.tobytes()
