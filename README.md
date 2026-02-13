@@ -1,6 +1,6 @@
 # ZIM Browser
 
-A Python-based tool for browsing and exploring ZIM (Zeno Information Model) archives. ZIM files are compressed archive formats used primarily for offline storage of Wikipedia and other wiki content.
+A Python-based tool for browsing and exploring ZIM archives. ZIM files are compressed archive formats used primarily for offline storage of Wikipedia and other wiki content.
 
 ![Python Version](https://img.shields.io/badge/python-3.12+-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
@@ -9,9 +9,11 @@ A Python-based tool for browsing and exploring ZIM (Zeno Information Model) arch
 
 - **CLI Tool** (`list_zim_articles.py`): List, search, and dump articles from ZIM files
 - **TUI Browser** (`zim_browser.py`): Interactive terminal UI for browsing ZIM archives with:
-  - Sidebar article list with search
+  - Sidebar article list with lazy loading (auto-loads more as you scroll)
   - HTML to Markdown content rendering
+  - Clickable internal links (supports relative paths, fragments, query params)
   - Full keyboard navigation
+  - Random article feature
 
 ## Quick Start
 
@@ -63,10 +65,20 @@ uv run python zim_browser.py data/<example.zim>
 | `↓`/`↑` or `j`/`k` | Navigate list / Scroll content |
 | `Tab` | Switch focus between sidebar and content |
 | `s` / `c` | Focus sidebar / content |
+| `r` | Load random article |
 | `Space` / `PageDown` | Page down in content |
 | `PageUp` | Page up in content |
 | `g` / `G` | Jump to top / bottom |
+| `Escape` | Cancel search / Reset sidebar to normal articles |
 | `q` | Quit |
+
+**Features:**
+- **Clickable Links**: Click on any link in article content to navigate
+  - Internal links navigate within the ZIM archive
+  - External links open in your default browser
+  - Supports relative paths (`../Article`), fragments (`#section`), and query params
+- **Lazy Loading**: Scroll to bottom of article list to auto-load more articles
+- **Random Article**: Press `r` to jump to a random article
 
 ## Project Structure
 

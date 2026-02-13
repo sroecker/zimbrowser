@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-This is a Python-based tool for browsing and exploring ZIM (Zeno Information Model) archives. ZIM files are compressed archive formats used primarily for offline storage of Wikipedia and other wiki content. This project provides command-line utilities to inspect ZIM files, list articles, search content, and retrieve entry details.
+This is a Python-based tool for browsing and exploring ZIM archives. ZIM files are compressed archive formats used primarily for offline storage of Wikipedia and other wiki content. This project provides command-line utilities to inspect ZIM files, list articles, search content, and retrieve entry details.
 
 The project currently works with any ZIM archive file (e.g., Wikipedia dumps, Wikivoyage, etc.) from [OpenZIM Farm](https://farm.openzim.org/).
 
@@ -47,29 +47,46 @@ The primary utility script for interacting with ZIM archives. It provides the fo
 
 An interactive TUI (Text User Interface) browser built with [Textual](https://textual.textualize.io/). Features:
 
-- **Sidebar**: Lists articles with quick navigation
+- **Sidebar**: Lists articles with quick navigation and lazy loading
 - **Search**: Press `/` to search articles by prefix
 - **Content View**: Displays article content with HTML converted to Markdown
+- **Clickable Links**: Click any link to navigate (internal/external supported)
+- **Random Article**: Press `r` to load a random article
 - **Full Keyboard Navigation**
 
 **Keyboard Shortcuts:**
 
 | Key | Action |
 |-----|--------|
-| `/` | Search articles |
-| `↓`/`↑` or `j`/`k` | Navigate list (sidebar) / Scroll (content) |
-| `g` / `G` | Jump to top / bottom of list |
-| `Tab` | Toggle focus between sidebar and content |
-| `s` / `c` | Focus sidebar / content |
-| `Space` / `PageDown` | Page down in content |
-| `PageUp` | Page up in content |
-| `Enter` | Select article in sidebar |
+| `/` | Search articles by prefix |
+| `↓`/`↑` or `j`/`k` | Navigate list (sidebar) / Scroll content (content view) |
+| `g` / `G` | Jump to top / bottom of article list |
+| `Tab` | Toggle focus between sidebar and content view |
+| `s` / `c` | Focus sidebar / content view |
+| `r` | Load random article |
+| `Space` / `PageDown` | Page down in content view |
+| `PageUp` | Page up in content view |
+| `Enter` | Select article from sidebar to display |
+| `Escape` | Cancel search / Reset sidebar to normal articles |
 | `q` | Quit |
+
+**Link Handling:**
+- Internal links navigate within the ZIM archive
+- External links (`http://`, `https://`) open in default browser
+- Supports relative paths (`../Article`, `./Article`)
+- Handles URL-encoded characters (`%20` → space)
+- Strips fragment identifiers (`#section`) and query params (`?key=value`)
+
+**Lazy Loading:**
+- Articles are loaded in batches (default 100)
+- More articles auto-load when scrolling within 10 items of bottom
+- Triggered by watching `ListView.index` changes
 
 ### Dependencies
 
 - **libzim** (v3.8.0): Provides the core functionality for reading ZIM files
   - `Archive`: Main class for opening and accessing ZIM files
+  - `Archive.get_random_entry()`: Get a random entry from the archive
   - `SuggestionSearcher`: For prefix-based article suggestions
   - `Searcher`/`Query`: For full-text search capabilities
 - **textual** (v7.5.0): TUI framework for the interactive browser
@@ -122,9 +139,11 @@ uv run python zim_browser.py data/<example.zim>
 | `g` / `G` | Jump to top / bottom of article list |
 | `Tab` | Toggle focus between sidebar and content view |
 | `s` / `c` | Focus sidebar / content view |
+| `r` | Load random article |
 | `Space` / `PageDown` | Page down in content view |
 | `PageUp` | Page up in content view |
 | `Enter` | Select article from sidebar to display |
+| `Escape` | Cancel search / Reset sidebar to normal articles |
 | `q` | Quit |
 
 ### Adding Dependencies
@@ -180,8 +199,9 @@ uv run python list_zim_articles.py data/<example.zim> get "mainPage"
    - Keep keyboard shortcuts consistent with vim-like navigation
    - Ensure Tab switches focus between major panes
    - Use `VerticalScroll` for scrollable content areas
-3. **Path Handling**: Use `pathlib.Path` for file path operations
-4. **Output Formatting**: Use formatted strings with consistent column widths for tabular output
+   - Bind new features to single-key shortcuts where possible
+4. **Path Handling**: Use `pathlib.Path` for file path operations
+5. **Output Formatting**: Use formatted strings with consistent column widths for tabular output
 
 ## Security Considerations
 
