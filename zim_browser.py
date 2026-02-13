@@ -151,6 +151,10 @@ class Sidebar(Vertical):
         self.archive = archive
         self.suggestion_searcher = SuggestionSearcher(archive)
         self.all_articles: list[tuple[str, str]] = []  # (path, title)
+        self.current_prefix: str = ""
+        self.current_offset: int = 0
+        self.batch_size: int = 100
+        self.has_more: bool = True
         super().__init__(id="sidebar")
     
     def compose(self) -> ComposeResult:
@@ -160,17 +164,32 @@ class Sidebar(Vertical):
     
     def on_mount(self) -> None:
         self.load_articles("", 100)
+        # Watch for highlight changes to trigger lazy loading
+        self.article_list.watch(self.article_list, "index", self._on_highlight_changed)
     
     def load_articles(self, prefix: str = "", limit: int = 100) -> None:
         """Load articles from ZIM file."""
         if not prefix:
             prefix = "a"  # Default prefix if empty
         
-        suggestion = self.suggestion_searcher.suggest(prefix)
-        results = suggestion.getResults(0, limit)
+        self.current_prefix = prefix
+        self.current_offset = 0
+        self.batch_size = limit
+        self.has_more = True
         
-        self.all_articles = []
+        self._load_batch(0, limit, clear=True)
+    
+    def _load_batch(self, offset: int, limit: int, clear: bool = False) -> None:
+        """Load a batch of articles."""
+        suggestion = self.suggestion_searcher.suggest(self.current_prefix)
+        results = suggestion.getResults(offset, limit)
+        
+        if clear:
+            self.all_articles = []
+            self.article_list.clear()
+        
         items = []
+        count = 0
         
         for path in results:
             try:
@@ -178,12 +197,33 @@ class Sidebar(Vertical):
                 title = entry.title or path
                 self.all_articles.append((path, title))
                 items.append(ListItem(Label(title), name=path))
+                count += 1
             except Exception:
                 pass
         
-        self.article_list.clear()
         for item in items:
             self.article_list.append(item)
+        
+        # Update state
+        self.current_offset = offset + count
+        self.has_more = count >= limit
+    
+    def load_more_articles(self) -> None:
+        """Load more articles if available."""
+        if self.has_more:
+            self._load_batch(self.current_offset, self.batch_size)
+    
+    def _on_highlight_changed(self, new_index: int | None) -> None:
+        """Called when the highlighted item changes - trigger lazy loading near bottom."""
+        if not self.has_more or new_index is None:
+            return
+        
+        # Load more when within 10 items of the bottom
+        threshold = 10
+        list_size = len(self.all_articles)
+        
+        if list_size > 0 and new_index >= list_size - threshold:
+            self.load_more_articles()
     
     def search_articles(self, query: str) -> None:
         """Search for articles matching query."""
