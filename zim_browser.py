@@ -15,6 +15,8 @@ from urllib.parse import unquote
 ArticleEntry: TypeAlias = tuple[str, str]  # (path, title)
 
 MARKDOWN_CACHE_SIZE = 50
+BATCH_SIZE = 100
+LAZY_LOAD_THRESHOLD = 10
 
 warnings.filterwarnings("ignore", category=DeprecationWarning, module="libzim")
 
@@ -172,7 +174,7 @@ class Sidebar(Vertical):
     
     def on_mount(self) -> None:
         """Initialize the sidebar by loading initial articles."""
-        self.load_articles("", 100)
+        self.load_articles("", BATCH_SIZE)
         self.article_list.watch(self.article_list, "index", self._on_highlight_changed)
     
     def load_articles(self, prefix: str = "", limit: int = 100) -> None:
@@ -240,10 +242,9 @@ class Sidebar(Vertical):
         if not self.has_more or new_index is None:
             return
         
-        threshold = 10
         list_size = len(self.all_articles)
         
-        if list_size > 0 and new_index >= list_size - threshold:
+        if list_size > 0 and new_index >= list_size - LAZY_LOAD_THRESHOLD:
             self.load_more_articles()
     
     def search_articles(self, query: str) -> None:
@@ -252,7 +253,7 @@ class Sidebar(Vertical):
         Args:
             query: The search query prefix to match against article titles.
         """
-        self.load_articles(query, 100)
+        self.load_articles(query, BATCH_SIZE)
     
     def get_selected_article(self) -> ArticleEntry | None:
         """Get the currently selected article path and title.
@@ -330,7 +331,7 @@ class ZimBrowser(App):
     
     def action_reset_list(self) -> None:
         """Reset sidebar to show all articles (default prefix)."""
-        self.sidebar.load_articles("", 100)
+        self.sidebar.load_articles("", BATCH_SIZE)
         self.sidebar.article_list.focus()
     
     def on_search_modal_search_submitted(self, message: SearchModal.SearchSubmitted) -> None:
