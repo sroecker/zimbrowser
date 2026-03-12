@@ -163,7 +163,7 @@ class Sidebar(Vertical):
         self.all_articles: list[ArticleEntry] = []
         self.current_prefix: str = ""
         self.current_offset: int = 0
-        self.batch_size: int = 100
+        self.batch_size: int = BATCH_SIZE
         self.has_more: bool = True
         super().__init__(id="sidebar")
     
@@ -177,7 +177,7 @@ class Sidebar(Vertical):
         self.load_articles("", BATCH_SIZE)
         self.article_list.watch(self.article_list, "index", self._on_highlight_changed)
     
-    def load_articles(self, prefix: str = "", limit: int = 100) -> None:
+    def load_articles(self, prefix: str = "", limit: int = BATCH_SIZE) -> None:
         """Load articles from ZIM file.
 
         Args:
