@@ -363,7 +363,6 @@ class ZimBrowser(App):
             The normalized path, or None if the href is external.
         """
         if href.startswith("http://") or href.startswith("https://") or href.startswith("//"):
-            webbrowser.open(href)
             return None
         
         path = href.lstrip("/")
@@ -386,6 +385,10 @@ class ZimBrowser(App):
     def on_markdown_link_clicked(self, event: Markdown.LinkClicked) -> None:
         """Handle clicked links in article content."""
         href = event.href
+
+        if href.startswith("http://") or href.startswith("https://") or href.startswith("//"):
+            webbrowser.open(f"https:{href}" if href.startswith("//") else href)
+            return
         
         path = self._normalize_href(href)
         if path is None:
