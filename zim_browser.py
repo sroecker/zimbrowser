@@ -309,8 +309,8 @@ class ZimBrowser(App):
         """Initialize the app and load the main page if available."""
         self.sidebar.focus()
         try:
-            main_entry = self.archive.get_entry_by_path("mainPage")
-            if main_entry:
+            if self.archive.has_main_entry:
+                main_entry = self.archive.main_entry
                 title = main_entry.title or "Main Page"
                 self.load_article(main_entry.path, title)
         except Exception:
