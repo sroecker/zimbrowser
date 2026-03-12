@@ -159,7 +159,7 @@ def dump_entry_content(archive: Archive, path: str, output_path: str | None = No
         
         # Try to decode as text if it's a text type
         mimetype = item.mimetype
-        is_text = 'text/' in mimetype or mimetype in ('application/javascript', 'application/json')
+        is_text = mimetype.startswith('text/') or mimetype in ('application/javascript', 'application/json')
         
         if output_path:
             # Write to file
