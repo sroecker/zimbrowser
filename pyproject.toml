@@ -5,7 +5,11 @@ description = "A simple TUI browser for ZIM files"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "libzim>=3.8.0",
-    "markdownify>=1.2.2",
-    "textual>=7.5.0",
+    "libzim>=3.8.0,<4.0.0",
+    "markdownify>=1.2.2,<2.0.0",
+    "textual>=7.5.0,<8.0.0",
 ]
+
+[project.scripts]
+zim-browser = "zim_browser:main"
+zim-list = "list_zim_articles:main"

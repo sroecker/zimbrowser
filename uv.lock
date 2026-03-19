@@ -1,0 +1,216 @@
+version = 1
+revision = 2
+requires-python = ">=3.12"
+
+[[package]]
+name = "beautifulsoup4"
+version = "4.14.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "soupsieve" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/c3/b0/1c6a16426d389813b48d95e26898aff79abbde42ad353958ad95cc8c9b21/beautifulsoup4-4.14.3.tar.gz", hash = "sha256:6292b1c5186d356bba669ef9f7f051757099565ad9ada5dd630bd9de5fa7fb86", size = 627737, upload-time = "2025-11-30T15:08:26.084Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/1a/39/47f9197bdd44df24d67ac8893641e16f386c984a0619ef2ee4c51fbbc019/beautifulsoup4-4.14.3-py3-none-any.whl", hash = "sha256:0918bfe44902e6ad8d57732ba310582e98da931428d231a5ecb9e7c703a735bb", size = 107721, upload-time = "2025-11-30T15:08:24.087Z" },
+]
+
+[[package]]
+name = "libzim"
+version = "3.8.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/4d/85/2b3767f78eb457f1c0c31e2736cfef9cd7f8c29afa74b0c1d4bc2193c865/libzim-3.8.0.tar.gz", hash = "sha256:ba26858bc587cbef44ef5a4efff9b57f93a3bf806a96aac9602700f545268354", size = 58439, upload-time = "2025-11-14T07:47:43.455Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/c6/8d/ed378affa4081e362896ac9c91f9ec778c2224227d11431f43e3a82789dc/libzim-3.8.0-cp312-cp312-macosx_13_0_arm64.whl", hash = "sha256:eef6247e77fb012fb093465875c0d93feffd0628cf745f83dd4b9bc9b91a76f3", size = 3608503, upload-time = "2025-11-14T07:46:56.874Z" },
+    { url = "https://files.pythonhosted.org/packages/97/ba/fc1c0c3865eed849aa702bdae3a9dfcd77ae6910ecfb8da96850f037f055/libzim-3.8.0-cp312-cp312-macosx_13_0_x86_64.whl", hash = "sha256:7568234b25a2418cde9908efcaf9d35591b73ae6fe6ab71dd0892050021d910d", size = 3827615, upload-time = "2025-11-14T07:46:58.491Z" },
+    { url = "https://files.pythonhosted.org/packages/ff/54/7426ae437b71a6e3b096561fdc734325fb585f96ff5a8038560594ccdaae/libzim-3.8.0-cp312-cp312-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:eddaa0d075f1518b53e5c41ae30b99fca93c6816f265fdf5e5aa7616287f1665", size = 8216607, upload-time = "2025-11-14T07:46:59.717Z" },
+    { url = "https://files.pythonhosted.org/packages/9e/5a/1c774bc0dc71ac600a2239a985272f513ba4d281d63046d8acbbbfe00874/libzim-3.8.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:9e8b1b10889c739fbb1eec002098bd548cdbefa482c136834243c8c92bdd9fe4", size = 8427687, upload-time = "2025-11-14T07:47:01.02Z" },
+    { url = "https://files.pythonhosted.org/packages/dd/ef/4b85baba0c1f26dd12772a3e3211250d465494409b77289e5f0b0257a876/libzim-3.8.0-cp312-cp312-musllinux_1_2_aarch64.whl", hash = "sha256:7e6f8653d5c8aebeb24af70b62875272cc51767d6070b7c6973f36af29428d7e", size = 9536244, upload-time = "2025-11-14T07:47:02.657Z" },
+    { url = "https://files.pythonhosted.org/packages/7c/fe/6928f2487154d9461e61f854a0f8f6f6221e230ba5751047c151435dc6a2/libzim-3.8.0-cp312-cp312-musllinux_1_2_x86_64.whl", hash = "sha256:fd48c09818b4b780c1bf1bf4e8aca5b3142f6317b58d7d3ce7359069b43bac28", size = 9776206, upload-time = "2025-11-14T07:47:04.454Z" },
+    { url = "https://files.pythonhosted.org/packages/7d/99/3e3f57ac634b6aeebbc4080ca97210f906ff262de61c1cba6db64e331652/libzim-3.8.0-cp312-cp312-win_amd64.whl", hash = "sha256:60861787d709cb64d5b158ee120fd2af5bcd263a0b963da9434fa903cd51d496", size = 15953924, upload-time = "2025-11-14T07:47:06.837Z" },
+    { url = "https://files.pythonhosted.org/packages/ba/1e/fe65b6e803c859d6c34aa497cc9da57b6bfba099b92abda2b26aeeda8e6f/libzim-3.8.0-cp313-cp313-macosx_13_0_arm64.whl", hash = "sha256:e5a2d6f3193386cb50532a5fc323ac79d2a0dafc3f27ffa8ff485cf6e11b7990", size = 3607048, upload-time = "2025-11-14T07:47:08.633Z" },
+    { url = "https://files.pythonhosted.org/packages/29/83/a2901df3b68223b5ebbe43241901f54cc9c253bad6db9872429356b3cc0b/libzim-3.8.0-cp313-cp313-macosx_13_0_x86_64.whl", hash = "sha256:90c9ae8435371f5d219894e49a6b40bcd7bf5e9dbeff8d3a522a8bd27749db0b", size = 3825141, upload-time = "2025-11-14T07:47:10.071Z" },
+    { url = "https://files.pythonhosted.org/packages/6b/7f/50c70abfa680c47d3b43f8ba8cbb0ed6d3f7dd252e258bc19a0f043d45d7/libzim-3.8.0-cp313-cp313-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:b943444404f42b82f90a7a1f5bfe030b8454bafb5d0becc59d9fe5439602aec4", size = 8204446, upload-time = "2025-11-14T07:47:11.475Z" },
+    { url = "https://files.pythonhosted.org/packages/a1/4c/ab1ffc55dfec82353a6206f16e1f74f83716d2da205ebcf1f3cb18d0ca29/libzim-3.8.0-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:bdf1d8e7e6a52ad6fc6a18b9940c72703cae99d04f33ae67b4e0691df912bbcd", size = 8403446, upload-time = "2025-11-14T07:47:12.817Z" },
+    { url = "https://files.pythonhosted.org/packages/0c/ea/712c046554048b08c39c847960b8f4d670e7e4ceb163a0bfb966d60bb87b/libzim-3.8.0-cp313-cp313-musllinux_1_2_aarch64.whl", hash = "sha256:f16f331fc9510f0bc50347150a753b8512a52f5f7d330e49a6739a8fa8053d6e", size = 9528787, upload-time = "2025-11-14T07:47:14.469Z" },
+    { url = "https://files.pythonhosted.org/packages/f2/66/c85c89653afafc7770ae1db53b6ba2d5ab09aa06af7df3706e1ab5eee604/libzim-3.8.0-cp313-cp313-musllinux_1_2_x86_64.whl", hash = "sha256:15a7fd60fa8778b099053194ee5241429ae980de9d701dca5bc6c8f610426715", size = 9761806, upload-time = "2025-11-14T07:47:16.141Z" },
+    { url = "https://files.pythonhosted.org/packages/c5/da/73c96422eb01c08795cc530f6139ef3a29ec78cdcaa608a2a849cd85a122/libzim-3.8.0-cp313-cp313-win_amd64.whl", hash = "sha256:71d7105425edb48df8092d0bf09466b777cca03d3d458812f451ae596da630c2", size = 15954236, upload-time = "2025-11-14T07:47:17.992Z" },
+    { url = "https://files.pythonhosted.org/packages/52/a4/ad46e4d35609d3a60255777b3b11c584c4274b70a91a0e9bafab9ca3f6c1/libzim-3.8.0-cp314-cp314-macosx_13_0_arm64.whl", hash = "sha256:f4de472eba19aedf3051435c00dba8d71ea8736924d982d19a95e197f44c0a31", size = 3607671, upload-time = "2025-11-14T07:47:19.684Z" },
+    { url = "https://files.pythonhosted.org/packages/ab/0b/bb3539b9e623e0590455285686aff0d65d4a6ef438ae68157039cf2de538/libzim-3.8.0-cp314-cp314-macosx_13_0_x86_64.whl", hash = "sha256:e57e0f4e63c4761c02cb8406be26e63bd6c0622919dc266b7c698a0232619a6f", size = 3824884, upload-time = "2025-11-14T07:47:20.887Z" },
+    { url = "https://files.pythonhosted.org/packages/45/7d/284ee13d28fa5d7ff55b909c26f480ee217b8746439922cdd12c18bf7445/libzim-3.8.0-cp314-cp314-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:e28ec915841eda1caada0f3aa777a597018aee4b4e7e19b06b7a11beb069cd64", size = 8202174, upload-time = "2025-11-14T07:47:22.99Z" },
+    { url = "https://files.pythonhosted.org/packages/e9/1c/e4a6e4121fe1e5a95ffb1182663d4e2ecf6ee9079ed1c4607f4b7d371551/libzim-3.8.0-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:85081697225a4a048738545529ff04120889a00f6439c9e820db1530978c82e1", size = 8392971, upload-time = "2025-11-14T07:47:24.33Z" },
+    { url = "https://files.pythonhosted.org/packages/26/e4/566eaa480f88b276a822c705ecb2872e1edf533d47475882696c527e1787/libzim-3.8.0-cp314-cp314-musllinux_1_2_aarch64.whl", hash = "sha256:35d785cfc5b45935f9caec6879a13be9c923db9944b9142bb294a9839b004c76", size = 9532351, upload-time = "2025-11-14T07:47:25.927Z" },
+    { url = "https://files.pythonhosted.org/packages/e1/25/80014fa04da9bfc78ddafa8c554e5644138ef8c886a77f2d85ff0f076dc7/libzim-3.8.0-cp314-cp314-musllinux_1_2_x86_64.whl", hash = "sha256:50b8abb63ea79db0aa43f1c26f0106e3be96d4d2330b14915da7162b2fe4d966", size = 9751012, upload-time = "2025-11-14T07:47:27.578Z" },
+    { url = "https://files.pythonhosted.org/packages/23/26/2e8cfc37cc01818095fefb0b96859e3581de5ebd3c23ea0081820362e1f8/libzim-3.8.0-cp314-cp314-win_amd64.whl", hash = "sha256:a0e26819f2c91a35c4082b8ce06c6933154706227d5c41689f167855d6b850a4", size = 16620391, upload-time = "2025-11-14T07:47:29.705Z" },
+    { url = "https://files.pythonhosted.org/packages/08/08/fc2d834b612d34d244c8f53ba07f47524f0780754b56d02a7127eaf45e79/libzim-3.8.0-cp314-cp314t-macosx_13_0_arm64.whl", hash = "sha256:5066cfa51b7efacc9fdd738fe223b432345e0a0d5b245101c7980e65ca71b9e2", size = 3618129, upload-time = "2025-11-14T07:47:31.794Z" },
+    { url = "https://files.pythonhosted.org/packages/c6/ae/36c9c94cf6a89facfd81fe4257c94ccf033c6e6c351629168daa2349930d/libzim-3.8.0-cp314-cp314t-macosx_13_0_x86_64.whl", hash = "sha256:69dd82375e5660906adf28440e75899f7a08d96e890ba47f3f30a2fac63d9b6e", size = 3836160, upload-time = "2025-11-14T07:47:33.252Z" },
+    { url = "https://files.pythonhosted.org/packages/97/14/24b101c1a13bc3399b07379c717590994d6e018e3bc417a9d6ec89e2caed/libzim-3.8.0-cp314-cp314t-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:3569a80a13356eae21fc11dd31d09f2d9c748891239447a38e5194db2ff6ee55", size = 8216174, upload-time = "2025-11-14T07:47:34.568Z" },
+    { url = "https://files.pythonhosted.org/packages/b4/d0/28231d395c4520ce51c5cae8dc0b14f1d052b0ef53e1129f6bee4397808c/libzim-3.8.0-cp314-cp314t-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:58a52b8905ddab20113da4050e436c0963c0571cac49f3c3c77c5bd4f65a6bcb", size = 8390111, upload-time = "2025-11-14T07:47:35.966Z" },
+    { url = "https://files.pythonhosted.org/packages/5a/df/041cdfaacfbc93d9e87cc0550c00c823eb3ef5fceb3d77878ccd468f84e3/libzim-3.8.0-cp314-cp314t-musllinux_1_2_aarch64.whl", hash = "sha256:18983f246d43637d9c765d05d87b2d1092f9cb17ac252d0c8848d41c177a0054", size = 9532101, upload-time = "2025-11-14T07:47:37.693Z" },
+    { url = "https://files.pythonhosted.org/packages/3b/f5/d61f93e0b4c13e9557f68608fb87e34869b0eb5ac26aef0d28f500ca24c2/libzim-3.8.0-cp314-cp314t-musllinux_1_2_x86_64.whl", hash = "sha256:034967fa4fad30c4a5708572fdcde8db1291d37431bc23c5a536937e1a8b3bdc", size = 9740726, upload-time = "2025-11-14T07:47:39.474Z" },
+    { url = "https://files.pythonhosted.org/packages/4c/cd/01da95fa9e23a923e5b4f743f8f3caee135860e0c5ac7b35ddcc70b9f4a5/libzim-3.8.0-cp314-cp314t-win_amd64.whl", hash = "sha256:bfbda0a67a38c739ad1480ed0efac54893105dfb27e3404f99c3ba6b3fa55429", size = 16649541, upload-time = "2025-11-14T07:47:41.732Z" },
+]
+
+[[package]]
+name = "linkify-it-py"
+version = "2.0.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "uc-micro-py" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/2a/ae/bb56c6828e4797ba5a4821eec7c43b8bf40f69cda4d4f5f8c8a2810ec96a/linkify-it-py-2.0.3.tar.gz", hash = "sha256:68cda27e162e9215c17d786649d1da0021a451bdc436ef9e0fa0ba5234b9b048", size = 27946, upload-time = "2024-02-04T14:48:04.179Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/04/1e/b832de447dee8b582cac175871d2f6c3d5077cc56d5575cadba1fd1cccfa/linkify_it_py-2.0.3-py3-none-any.whl", hash = "sha256:6bcbc417b0ac14323382aef5c5192c0075bf8a9d6b41820a2b66371eac6b6d79", size = 19820, upload-time = "2024-02-04T14:48:02.496Z" },
+]
+
+[[package]]
+name = "markdown-it-py"
+version = "4.0.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "mdurl" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/5b/f5/4ec618ed16cc4f8fb3b701563655a69816155e79e24a17b651541804721d/markdown_it_py-4.0.0.tar.gz", hash = "sha256:cb0a2b4aa34f932c007117b194e945bd74e0ec24133ceb5bac59009cda1cb9f3", size = 73070, upload-time = "2025-08-11T12:57:52.854Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/94/54/e7d793b573f298e1c9013b8c4dade17d481164aa517d1d7148619c2cedbf/markdown_it_py-4.0.0-py3-none-any.whl", hash = "sha256:87327c59b172c5011896038353a81343b6754500a08cd7a4973bb48c6d578147", size = 87321, upload-time = "2025-08-11T12:57:51.923Z" },
+]
+
+[package.optional-dependencies]
+linkify = [
+    { name = "linkify-it-py" },
+]
+
+[[package]]
+name = "markdownify"
+version = "1.2.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "beautifulsoup4" },
+    { name = "six" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/3f/bc/c8c8eea5335341306b0fa7e1cb33c5e1c8d24ef70ddd684da65f41c49c92/markdownify-1.2.2.tar.gz", hash = "sha256:b274f1b5943180b031b699b199cbaeb1e2ac938b75851849a31fd0c3d6603d09", size = 18816, upload-time = "2025-11-16T19:21:18.565Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/43/ce/f1e3e9d959db134cedf06825fae8d5b294bd368aacdd0831a3975b7c4d55/markdownify-1.2.2-py3-none-any.whl", hash = "sha256:3f02d3cc52714084d6e589f70397b6fc9f2f3a8531481bf35e8cc39f975e186a", size = 15724, upload-time = "2025-11-16T19:21:17.622Z" },
+]
+
+[[package]]
+name = "mdit-py-plugins"
+version = "0.5.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "markdown-it-py" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/b2/fd/a756d36c0bfba5f6e39a1cdbdbfdd448dc02692467d83816dff4592a1ebc/mdit_py_plugins-0.5.0.tar.gz", hash = "sha256:f4918cb50119f50446560513a8e311d574ff6aaed72606ddae6d35716fe809c6", size = 44655, upload-time = "2025-08-11T07:25:49.083Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/fb/86/dd6e5db36df29e76c7a7699123569a4a18c1623ce68d826ed96c62643cae/mdit_py_plugins-0.5.0-py3-none-any.whl", hash = "sha256:07a08422fc1936a5d26d146759e9155ea466e842f5ab2f7d2266dd084c8dab1f", size = 57205, upload-time = "2025-08-11T07:25:47.597Z" },
+]
+
+[[package]]
+name = "mdurl"
+version = "0.1.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/d6/54/cfe61301667036ec958cb99bd3efefba235e65cdeb9c84d24a8293ba1d90/mdurl-0.1.2.tar.gz", hash = "sha256:bb413d29f5eea38f31dd4754dd7377d4465116fb207585f97bf925588687c1ba", size = 8729, upload-time = "2022-08-14T12:40:10.846Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b3/38/89ba8ad64ae25be8de66a6d463314cf1eb366222074cfda9ee839c56a4b4/mdurl-0.1.2-py3-none-any.whl", hash = "sha256:84008a41e51615a49fc9966191ff91509e3c40b939176e643fd50a5c2196b8f8", size = 9979, upload-time = "2022-08-14T12:40:09.779Z" },
+]
+
+[[package]]
+name = "platformdirs"
+version = "4.6.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/20/e5/474d0a8508029286b905622e6929470fb84337cfa08f9d09fbb624515249/platformdirs-4.6.0.tar.gz", hash = "sha256:4a13c2db1071e5846c3b3e04e5b095c0de36b2a24be9a3bc0145ca66fce4e328", size = 23433, upload-time = "2026-02-12T14:36:21.288Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/da/10/1b0dcf51427326f70e50d98df21b18c228117a743a1fc515a42f8dc7d342/platformdirs-4.6.0-py3-none-any.whl", hash = "sha256:dd7f808d828e1764a22ebff09e60f175ee3c41876606a6132a688d809c7c9c73", size = 19549, upload-time = "2026-02-12T14:36:19.743Z" },
+]
+
+[[package]]
+name = "pygments"
+version = "2.19.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/b0/77/a5b8c569bf593b0140bde72ea885a803b82086995367bf2037de0159d924/pygments-2.19.2.tar.gz", hash = "sha256:636cb2477cec7f8952536970bc533bc43743542f70392ae026374600add5b887", size = 4968631, upload-time = "2025-06-21T13:39:12.283Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/c7/21/705964c7812476f378728bdf590ca4b771ec72385c533964653c68e86bdc/pygments-2.19.2-py3-none-any.whl", hash = "sha256:86540386c03d588bb81d44bc3928634ff26449851e99741617ecb9037ee5ec0b", size = 1225217, upload-time = "2025-06-21T13:39:07.939Z" },
+]
+
+[[package]]
+name = "rich"
+version = "14.3.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "markdown-it-py" },
+    { name = "pygments" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/74/99/a4cab2acbb884f80e558b0771e97e21e939c5dfb460f488d19df485e8298/rich-14.3.2.tar.gz", hash = "sha256:e712f11c1a562a11843306f5ed999475f09ac31ffb64281f73ab29ffdda8b3b8", size = 230143, upload-time = "2026-02-01T16:20:47.908Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ef/45/615f5babd880b4bd7d405cc0dc348234c5ffb6ed1ea33e152ede08b2072d/rich-14.3.2-py3-none-any.whl", hash = "sha256:08e67c3e90884651da3239ea668222d19bea7b589149d8014a21c633420dbb69", size = 309963, upload-time = "2026-02-01T16:20:46.078Z" },
+]
+
+[[package]]
+name = "six"
+version = "1.17.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/94/e7/b2c673351809dca68a0e064b6af791aa332cf192da575fd474ed7d6f16a2/six-1.17.0.tar.gz", hash = "sha256:ff70335d468e7eb6ec65b95b99d3a2836546063f63acc5171de367e834932a81", size = 34031, upload-time = "2024-12-04T17:35:28.174Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b7/ce/149a00dd41f10bc29e5921b496af8b574d8413afcd5e30dfa0ed46c2cc5e/six-1.17.0-py2.py3-none-any.whl", hash = "sha256:4721f391ed90541fddacab5acf947aa0d3dc7d27b2e1e8eda2be8970586c3274", size = 11050, upload-time = "2024-12-04T17:35:26.475Z" },
+]
+
+[[package]]
+name = "soupsieve"
+version = "2.8.3"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/7b/ae/2d9c981590ed9999a0d91755b47fc74f74de286b0f5cee14c9269041e6c4/soupsieve-2.8.3.tar.gz", hash = "sha256:3267f1eeea4251fb42728b6dfb746edc9acaffc4a45b27e19450b676586e8349", size = 118627, upload-time = "2026-01-20T04:27:02.457Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/46/2c/1462b1d0a634697ae9e55b3cecdcb64788e8b7d63f54d923fcd0bb140aed/soupsieve-2.8.3-py3-none-any.whl", hash = "sha256:ed64f2ba4eebeab06cc4962affce381647455978ffc1e36bb79a545b91f45a95", size = 37016, upload-time = "2026-01-20T04:27:01.012Z" },
+]
+
+[[package]]
+name = "textual"
+version = "7.5.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "markdown-it-py", extra = ["linkify"] },
+    { name = "mdit-py-plugins" },
+    { name = "platformdirs" },
+    { name = "pygments" },
+    { name = "rich" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/9f/38/7d169a765993efde5095c70a668bf4f5831bb7ac099e932f2783e9b71abf/textual-7.5.0.tar.gz", hash = "sha256:c730cba1e3d704e8f1ca915b6a3af01451e3bca380114baacf6abf87e9dac8b6", size = 1592319, upload-time = "2026-01-30T13:46:39.881Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/9c/78/96ddb99933e11d91bc6e05edae23d2687e44213066bcbaca338898c73c47/textual-7.5.0-py3-none-any.whl", hash = "sha256:849dfee9d705eab3b2d07b33152b7bd74fb1f5056e002873cc448bce500c6374", size = 718164, upload-time = "2026-01-30T13:46:37.635Z" },
+]
+
+[[package]]
+name = "typing-extensions"
+version = "4.15.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/72/94/1a15dd82efb362ac84269196e94cf00f187f7ed21c242792a923cdb1c61f/typing_extensions-4.15.0.tar.gz", hash = "sha256:0cea48d173cc12fa28ecabc3b837ea3cf6f38c6d1136f85cbaaf598984861466", size = 109391, upload-time = "2025-08-25T13:49:26.313Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/18/67/36e9267722cc04a6b9f15c7f3441c2363321a3ea07da7ae0c0707beb2a9c/typing_extensions-4.15.0-py3-none-any.whl", hash = "sha256:f0fa19c6845758ab08074a0cfa8b7aecb71c999ca73d62883bc25cc018c4e548", size = 44614, upload-time = "2025-08-25T13:49:24.86Z" },
+]
+
+[[package]]
+name = "uc-micro-py"
+version = "1.0.3"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/91/7a/146a99696aee0609e3712f2b44c6274566bc368dfe8375191278045186b8/uc-micro-py-1.0.3.tar.gz", hash = "sha256:d321b92cff673ec58027c04015fcaa8bb1e005478643ff4a500882eaab88c48a", size = 6043, upload-time = "2024-02-09T16:52:01.654Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/37/87/1f677586e8ac487e29672e4b17455758fce261de06a0d086167bb760361a/uc_micro_py-1.0.3-py3-none-any.whl", hash = "sha256:db1dffff340817673d7b466ec86114a9dc0e9d4d9b5ba229d9d60e5c12600cd5", size = 6229, upload-time = "2024-02-09T16:52:00.371Z" },
+]
+
+[[package]]
+name = "zimbrowser"
+version = "0.1.0"
+source = { virtual = "." }
+dependencies = [
+    { name = "libzim" },
+    { name = "markdownify" },
+    { name = "textual" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "libzim", specifier = ">=3.8.0" },
+    { name = "markdownify", specifier = ">=1.2.2" },
+    { name = "textual", specifier = ">=7.5.0" },
+]
